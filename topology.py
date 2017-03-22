@@ -1,6 +1,6 @@
 from node import Node
 
-class Topology(object):
+class Topology:
     """docstring for Topology"""
     def __init__(self, width=0, height=0, transmission_range=0, number_of_routers=0,\
      number_of_end_devices=0, coordinator_locations=0):
@@ -58,3 +58,16 @@ class Topology(object):
             node_type=pickle.dump(fp)
             self.STAs.append(Node([x,y],self.STAs.__len__(),node_type))
         fp.close()
+
+    def create_edge_table_for_gephi(self,filename):
+    # Description: Create the edge table to help illustrate the topology in gephi
+    # Input: filename--the cvs file
+        fp=open(filename,"w")
+        fp.write("Source,Target,Type,Weight\n")
+        for each in STAs:
+            if each.type=="end device":
+                continue
+            for each_neighbour in each.neighbours:
+                if each_neighbour.ID> each.ID:
+                    line=str(each.ID)+","+str(each_neighbour.ID)+",Undirected,1\n"
+                    fp.write(line)

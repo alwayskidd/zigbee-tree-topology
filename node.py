@@ -1,4 +1,4 @@
-class Node():
+class Node:
     def __init__(self,locations,ID,node_type):
         self.neighbours=[] #record the STAs that can be heard
         self.parents=[] # record the STAs that are the parent of this STA
