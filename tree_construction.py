@@ -1,4 +1,7 @@
 from node import node
+# initialize the phy topology
+Cm,Rm,Lm=5,5,9
+# read the node location from pkl file
 fp=open("node_record.pkl",'rb')
 import pickle
 number_of_nodes=pickle.load(fp)
@@ -7,17 +10,18 @@ STAs=[]
 for i in range(number_of_nodes):
     x=pickle.load(fp)
     y=pickle.load(fp)
-    STAs.append(node([x,y],i))
+    node_type=pickle.load(fp)
+    STAs.append(node([x,y],i,node_type))
+    STAs[-1].set_tree_parameters(Cm,Rm,Lm)
 
-#### building the neighhood of each STA #######
+#### building the neighship of STAs #######
 for i in STAs:
     for j in STAs:
         if i.if_can_hear(j,transmission_range) and not i==j:
             i.add_neighbour(j)
             j.add_neighbour(i)
+
 #### construct a tree ##########
-Cm=5
-Lm=9
 bfs_list=[]
 bfs_list.append(STAs[0])
 STAs[0].parents=None
@@ -26,17 +30,20 @@ print(bfs_list[0].parents)
 import random
 while not bfs_list==[]:
     temp=bfs_list.pop(0)
-    children_candidates=[]
-    for each in temp.neighbours:
-        if each.parents==[]:
-            children_candidates.append(each)
-    random.shuffle(children_candidates)
-    while not children_candidates==[] and temp.children.__len__()<Cm: # insert a candidate into childrens list
-        child=children_candidates.pop()
-        temp.add_children(child,Cm)
-        child.add_parent(temp)
-        child.level=temp.level+1
-        bfs_list.append(child)
+    children_candidates_r=[] #candidate children with type of router
+    children_candidates_d=[] #candidate children with type of devices
+    # temp=bfs_list.pop(0)
+    # children_candidates=[]
+    # for each in temp.neighbours:
+    #     if each.parents==[]:
+    #         children_candidates.append(each)
+    # random.shuffle(children_candidates)
+    # while not children_candidates==[] and temp.children.__len__()<Cm: # insert a candidate into childrens list
+    #     child=children_candidates.pop()
+    #     temp.add_children(child,Cm)
+    #     child.add_parent(temp)
+    #     child.level=temp.level+1
+    #     bfs_list.append(child)
 
 
 fp=open("../tree_Cm="+str(Cm)+"_Lm="+str(Lm)+".csv","w")

@@ -71,12 +71,19 @@ class node():
             break
         else:
             ancestor=ancestor.parent
+    # calculate the hop count to reach the ancestor and going down to the destination
     hops=self.level-ancestor.level+destination.level-ancestor.level
     return hops,ancestor
 
-
-
     def add_parent(self,STA): # add a parent to this node
         assert STA in self.neighbours, "add a parent which is not one of the neighbours"
-        assert self.parents==[], "this node has alreayd get a parent"
+        assert self.parents==[], "this node has alreay get a parent"
         self.parents.append(STA)
+
+    def has_parent(self): # check whether this node has been assigned a parent
+        # return: True--if this node has a parent
+        #         False--if this node has no parent
+        if self.parents==[]:
+            return False
+        else:
+            return True
