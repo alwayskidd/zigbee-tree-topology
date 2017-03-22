@@ -23,14 +23,15 @@ class node():
         assert self.Cm!=None and self.Lm!=None and self.Rm!=None, \
             "haven't set the parameter of the tree but doing the construction"
         if self.Rm=1:
-            self.Cskip=1+self.Cm*(self.Lm-d-1)
+            self.Cskip=1+self.Cm*(self.Lm-self.level-1)
         else:
-            self.Cskip=(1+self.Cm-self.Rm-self.Cm*self.Rm**(self.Lm-d-1))
+            self.Cskip=(1+self.Cm-self.Rm-self.Cm*self.Rm**(self.Lm-self.level-1))
 
     def if_can_hear(self,STA,transmission_range): 
     # to see if a node is within its transmission range
     # args: STA--the STA being checked, transmission_range--the transmission range set in the sim
-    # return: True--if it is within the transmission range, False--if it is not
+    # return: True--if it is within the transmission range, 
+    #         False--if it is not
         import math 
         if math.sqrt((STA.x-self.x)**2+(STA.y-self.y)**2)<=transmission_range:
             return True
@@ -56,6 +57,24 @@ class node():
             self.children_d.append(STA)
             return self.address+Cskip*Rm+self.children_d.__len__()
         return False
+
+    def find_ancestors(self,destination):
+    # find the ancestor of current node and the destination
+    # input: destination--the destination node
+    # output: hops-- the expected hops to reach the destination according to tree routing
+    #         ancestor-- the ancestor node
+    ancestor=self
+    while True: #find the ancestor that can reach the destination through a downlink path
+        lower_bound=ancestor.address
+        upper_bound=ancestor.address+ancestor.Cskip*ancestor.Rm+ancestor.Cm-ancestor.Rm # calculate the address coverage of this subtree
+        if destination.address>=lower_bound and destination.address<=upper_bound:
+            break
+        else:
+            ancestor=ancestor.parent
+    hops=self.level-ancestor.level+destination.level-ancestor.level
+    return hops,ancestor
+
+
 
     def add_parent(self,STA): # add a parent to this node
         assert STA in self.neighbours, "add a parent which is not one of the neighbours"
