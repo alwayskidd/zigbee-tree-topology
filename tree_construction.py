@@ -26,31 +26,47 @@ bfs_list=[]
 bfs_list.append(STAs[0])
 STAs[0].parents=None
 counter=0
-print(bfs_list[0].parents)
+STAs[0].set_address(0,0)
 import random
 while not bfs_list==[]:
-    temp=bfs_list.pop(0)
+    parent=bfs_list.pop(0)
+    if parent.level==Lm: # skip this node
+        continue
     children_candidates_r=[] #candidate children with type of router
     children_candidates_d=[] #candidate children with type of devices
-    # temp=bfs_list.pop(0)
-    # children_candidates=[]
-    # for each in temp.neighbours:
-    #     if each.parents==[]:
-    #         children_candidates.append(each)
-    # random.shuffle(children_candidates)
-    # while not children_candidates==[] and temp.children.__len__()<Cm: # insert a candidate into childrens list
-    #     child=children_candidates.pop()
-    #     temp.add_children(child,Cm)
-    #     child.add_parent(temp)
-    #     child.level=temp.level+1
-    #     bfs_list.append(child)
+    for each_neighbour in parent.neighbours: # choose the candidate of router child and end device child
+        if not each_neighbour.has_parent():
+            if each_neighbour.type=="router": 
+                children_candidates_r.append(each_neighbour)
+            if each_neighbour.type=="end device":
+                children_candidates_d.append(each_neighbour)
+    random.shuffle(children_candidates_r)
+    random.shuffle(children_candidates_d)
+
+    while not children_candidates_r==[] and parent.children_r.__len__()<Rm: # add a router candidate to this subtree
+        child=children_candidates_r.pop()
+        address=parent.add_children(child)
+        assert address!=False, "cannot add a child"
+        child.set_address(address,parent.level+1)
+        child.add_parent(parent)
+        bfs_list.append(child)
+
+    while not children_candidates_d==[] and parent.children_d.__len__()<Cm-Rm: # add a end device candidate to this subtree
+        child=children_candidates_d.pop()
+        address=parent.add_children(child)
+        assert address!=False, "cannot add a child"
+        child.set_address(address,parent.level+1)
+        child.add_parent(parent)
 
 
 fp=open("../tree_Cm="+str(Cm)+"_Lm="+str(Lm)+".csv","w")
 fp.write("Source,Target,Type,Weight\n")
 for each in STAs:
     # print(each.children)
-    for each_child in each.children:
+    for each_child in each.children_r:
+        line=str(each.ID)+","+str(each_child.ID)+",Directed,1.2\n"
+        fp.write(line)
+    for each_child in each.children_d:
         line=str(each.ID)+","+str(each_child.ID)+",Directed,1.2\n"
         fp.write(line)
 fp.close()

@@ -7,7 +7,7 @@ class node():
         self.x,self.y=locations[0],locations[1]
         self.ID=ID
         self.level=0
-        self.Cm,self.Rm,self.Lm=None,None,None
+        self.Cm,self.Rm,self.Lm,self.level,self.Cskip=None,None,None,None,None
         self.address=None #initial address is not assigned here
         self.type=node_type # the type could be "coordinator", "router" or "end device"
 
@@ -22,7 +22,7 @@ class node():
         #calculate the Cskip
         assert self.Cm!=None and self.Lm!=None and self.Rm!=None, \
             "haven't set the parameter of the tree but doing the construction"
-        if self.Rm=1:
+        if self.Rm==1:
             self.Cskip=1+self.Cm*(self.Lm-self.level-1)
         else:
             self.Cskip=(1+self.Cm-self.Rm-self.Cm*self.Rm**(self.Lm-self.level-1))
@@ -49,31 +49,31 @@ class node():
     def add_children(self,STA): # add a child to the children list (for end devices or for routers)
     # return the address of the child
         assert STA in self.neighbours, "add a child that is not one of the neighbours"
-        if STA.type="router" and self.children_r.__len__() <= self.Rm:
+        if STA.type=="router" and self.children_r.__len__() <= self.Rm:
             self.children_r.append(STA)
-            return self.address+Cskip*(self.children_r.__len__()-1)+1
+            return self.address+self.Cskip*(self.children_r.__len__()-1)+1
 
-        if STA.type="end device" and  self.children_r.__len__()+self.children_d.__len__()<=self.Cm:
+        if STA.type=="end device" and  self.children_r.__len__()+self.children_d.__len__()<=self.Cm:
             self.children_d.append(STA)
-            return self.address+Cskip*Rm+self.children_d.__len__()
+            return self.address+self.Cskip*Rm+self.children_d.__len__()
         return False
 
-    def find_ancestors(self,destination):
+    def find_ancestor(self,destination):
     # find the ancestor of current node and the destination
     # input: destination--the destination node
     # output: hops-- the expected hops to reach the destination according to tree routing
     #         ancestor-- the ancestor node
-    ancestor=self
-    while True: #find the ancestor that can reach the destination through a downlink path
-        lower_bound=ancestor.address
-        upper_bound=ancestor.address+ancestor.Cskip*ancestor.Rm+ancestor.Cm-ancestor.Rm # calculate the address coverage of this subtree
-        if destination.address>=lower_bound and destination.address<=upper_bound:
-            break
-        else:
-            ancestor=ancestor.parent
-    # calculate the hop count to reach the ancestor and going down to the destination
-    hops=self.level-ancestor.level+destination.level-ancestor.level
-    return hops,ancestor
+        ancestor=self
+        while True: #find the ancestor that can reach the destination through a downlink path
+            lower_bound=ancestor.address
+            upper_bound=ancestor.address+ancestor.Cskip*ancestor.Rm+ancestor.Cm-ancestor.Rm # calculate the address coverage of this subtree
+            if destination.address>=lower_bound and destination.address<=upper_bound:
+                break
+            else:
+                ancestor=ancestor.parent
+        # calculate the hop count to reach the ancestor and going down to the destination
+        hops=self.level-ancestor.level+destination.level-ancestor.level
+        return hops,ancestor
 
     def add_parent(self,STA): # add a parent to this node
         assert STA in self.neighbours, "add a parent which is not one of the neighbours"

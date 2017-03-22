@@ -30,7 +30,7 @@ for i in STAs:
 #### record the information of nodes onto the pkl file
 fp=open("node_record.pkl","wb")
 import pickle
-pickle.dump(number_of_node,fp)
+pickle.dump(number_of_routers+number_of_end_devices,fp)
 pickle.dump(transmission_range,fp)
 for each in STAs:
     pickle.dump(each.x,fp)
@@ -39,7 +39,7 @@ for each in STAs:
 fp.close()
 
 #### wirte the neighbourship #####
-fp=open("../edges_"+str(number_of_node)+".csv","w")
+fp=open("../edges_"+str(number_of_routers+number_of_end_devices)+".csv","w")
 fp.write("Source,Target,Type,Weight\n")
 for each in STAs:
     for each_neighbour in each.neighbours:
