@@ -23,12 +23,7 @@ class Topology:
             for i in range(self.number_of_end_devices):
                 x,y=random.uniform(0,self.width),random.uniform(0,self.height)
                 self.STAs.append(Node([x,y],self.STAs.__len__(),"end device"))
-        
-        for i in self.STAs: # create the neighbourship according to the transmission range
-            for j in self.STAs:
-                if i.if_can_hear(j,self.transmission_range) and not i==j:
-                    i.add_neighbour(j)
-                    j.add_neighbour(i)
+        self.__create_neighbourship__()
 
     def write_topology_on_disk(self,filename):
     # Description: record the topology on the disk for later use (multiple simulations on the same topology)
@@ -40,9 +35,6 @@ class Topology:
         pickle.dump(self.transmission_range,fp)
         pickle.dump(self.number_of_routers,fp)
         pickle.dump(self.number_of_end_devices,fp)
-        pickle.dump(self.coordinator.x,fp)
-        pickle.dump(self.coordinator.y,fp)
-        pickle.dump(self.coordinator.type,fp)
         for each in self.STAs:
             pickle.dump(each.x,fp)
             pickle.dump(each.y,fp)
@@ -64,6 +56,7 @@ class Topology:
             node_type=pickle.load(fp)
             self.STAs.append(Node([x,y],self.STAs.__len__(),node_type))
         fp.close()
+        self.__create_neighbourship__()
 
     def create_edge_table_for_gephi(self,filename):
     # Description: Create the edge table to help illustrate the topology in gephi
@@ -78,3 +71,11 @@ class Topology:
                     line=str(each.ID)+","+str(each_neighbour.ID)+",Undirected,1\n"
                     fp.write(line)
         fp.close()
+
+    def __create_neighbourship__(self):
+        # Create the neighbourship according to the nodes' locations
+        for i in self.STAs: 
+            for j in self.STAs:
+                if i.if_can_hear(j,self.transmission_range) and not i==j:
+                    i.add_neighbour(j)
+                    j.add_neighbour(i)
