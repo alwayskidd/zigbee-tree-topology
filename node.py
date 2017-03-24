@@ -89,43 +89,48 @@ class Node:
     # Input: destination--the destination node of this packet
     #        short_cut -- if short_cut routing is enabled (True) or not (False)
     # Outpue: nexthop node
-    assert destination!=self, "packet has arrived, no need to find next hop"
-    for each_neighbour in self.neighbours: # check if the destiantion is a one hop neighbour
-        if each_neighbour==destination: # directly send this packet to the neighbour
-            return each_neighbour
+        assert destination!=self, "packet has arrived, no need to find next hop"
+        for each_neighbour in self.neighbours: # check if the destiantion is a one hop neighbour
+            if each_neighbour==destination: # directly send this packet to the neighbour
+                return each_neighbour
 
-    if short_cut==False: # route along the tree
-        lower_bound=self.address
-        upper_bound=self.address+self.Cskip*self.Rm+self.Cm-self.Rm
-        if destination.address>upper_bound or destination.address<lower_bound:# go upstream        
-            return self.parent
-        # go downstream
-        for each_child in self.children_d: # check if it is one of the attached end devices
-            if each_child==destination:
-                return each_child
-        for each_child in self.children_r: # see the destination belongs to which subtree
-            lower_bound=each_child.address
-            upper_bound=each_child.address+each_child.Cskip*each_child.Rm+each_child.Cm-each_child.Rm
-            if destination.address<=upper_bound and destination.address>=lower_bound: # go to this subtree
-                return each_child
+        if short_cut==False: # route along the tree
+            lower_bound=self.address
+            upper_bound=self.address+self.Cskip*self.Rm+self.Cm-self.Rm
+            if destination.address>upper_bound or destination.address<lower_bound:# go upstream        
+                return self.parent
+            # go downstream
+            for each_child in self.children_d: # check if it is one of the attached end devices
+                if each_child==destination:
+                    return each_child
+            for each_child in self.children_r: # see the destination belongs to which subtree
+                lower_bound=each_child.address
+                upper_bound=each_child.address+each_child.Cskip*each_child.Rm+each_child.Cm-each_child.Rm
+                if destination.address<=upper_bound and destination.address>=lower_bound: # go to this subtree
+                    return each_child
 
-    if short_cut==True: # short cut tree routing
-        min_hops=self.Lm*5
-        candidate=None
-        for each_neighbour in self.neighbours:
-            hops,ancestor=each_neighbour.hops_to_destination(destination)
-            if min_hops>hops: # make this node as the candidate until some neighbours have less cost
-                min_hops=hops
-                candidate=each_neighbour
-        return candidate # this operation is exact how the paper is implemented
-            # if min_hops==hops: # add this neighbout as one of the candidate
-            #     candidate.append(each_neighbour)
+        if short_cut==True: # short cut tree routing
+            min_hops=self.Lm*5
+            candidate=None
+            for each_neighbour in self.neighbours:
+                hops,ancestor=each_neighbour.hops_to_destination(destination)
+                if min_hops>hops: # make this node as the candidate until some neighbours have less cost
+                    min_hops=hops
+                    candidate=each_neighbour
+            return candidate # this operation is exact how the paper is implemented
+                # if min_hops==hops: # add this neighbout as one of the candidate
+                #     candidate.append(each_neighbour)
 
     def add_parent(self,STA): # add a parent to this node
         assert STA in self.neighbours, "add a parent which is not one of the neighbours"
         assert self.parent==None, "this node has alreay get a parent"
         self.parent=STA
 
+    def  clear_children_parent(self):
+    # Description: Clear all the children and the parent
+        self.children_r=[]
+        self.children_d=[]
+        self.parent=None
 
     def has_parent(self): # check whether this node has been assigned a parent
         # return: True--if this node has a parent

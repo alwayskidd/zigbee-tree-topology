@@ -56,12 +56,12 @@ class Tree:
     # Input: filename--the cvs file
         colors=["#000000","#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff","#ff6666","#66ff66","#6666ff"]
         fp=open(filename,"w")
-        fp.write("ID,x,y,ColorOfNode\n")
+        fp.write("ID,x,y,ColorOfNode,label\n")
         for each in self.STAs:
             # print(each.address)
             # print(each.x)
             # print(each.y)
-            line=str(each.ID)+","+str(each.x/10)+","+str(each.y/10)+","+colors[each.level]+"\n"
+            line=str(each.ID)+","+str(each.x/10)+","+str(each.y/10)+","+colors[each.level]+","+str(each.ID)+"\n"
             fp.write(line)
         fp.close()
 
@@ -79,3 +79,8 @@ class Tree:
                 line=str(each.ID)+","+str(each_child.ID)+",Directed,1.2\n"
                 fp.write(line)
         fp.close()
+
+    def tree_destruction(self):
+    # Description: clear child and parent relationship between nodes
+        for each in self.STAs:
+            each.clear_children_parent()
