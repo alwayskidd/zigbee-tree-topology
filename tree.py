@@ -52,13 +52,14 @@ class Tree:
                 child.set_address(address,parent.level+1)
                 child.add_parent(parent)
 
-        flag=True
+        counter=0
         for each in self.STAs: # check whether all the STAs are added to this tree
             if each.address==None:
-                flag=False
-                print(each.ID)
-                break
-        assert flag==True, "exist a node which is not added to the tree"
+                counter=+0
+        if counter!=0:
+            return False,counter
+        return True,counter
+ 
 
 
     def create_node_table_for_gephi(self,filename):

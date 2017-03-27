@@ -15,13 +15,17 @@ phy_topology.read_topology_from_disk(filename)
 
 
 total_round=500
-Cm,Rm,Lm=5,5,7
+Cm,Rm,Lm=3,3,10
 tree=Tree(Cm,Rm,Lm,phy_topology)
-
+recorder=[] # record if a all nodes can be attached on a tree
 for i in range(total_round):
     fp=open("./result/Cm="+str(Cm)+"_Rm="+str(Rm)+"_Lm="+str(Lm)+"/round="+str(i)+".dat","w")
     print("round:"+str(i))
-    tree.tree_construction()
+    flag,counter=tree.tree_construction()
+    while flag==False: # record this event (some nodes cannot attached) and rebuild a tree:
+        recorder.append(counter)
+        tree.tree_destruction() # destruct this tree 
+        flag,counter=tree.tree_construction() # rebuild it
     hops=[]
     for source in tree.STAs:
         for destination in tree.STAs: # route packet from source to destination
@@ -38,3 +42,6 @@ for i in range(total_round):
     fp.write(str(hops))
     fp.close()
     tree.tree_destruction()
+fp=open("./result/Cm="+str(Cm)+"_Rm="+str(Rm)+"_Lm="+str(Lm)+"/Constuction_failure.dat","w")
+fp.write(str(recorder))
+fp.close()
