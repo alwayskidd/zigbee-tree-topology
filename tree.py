@@ -4,6 +4,7 @@ from topology import Topology
 class Tree:
     """docstring for Tree"""
     def __init__(self,Cm,Rm,Lm,phy_Topology):
+        # import copy
         self.Cm,self.Rm,self.Lm=Cm,Rm,Lm
         self.phy_Topology=phy_Topology
         self.STAs=self.phy_Topology.STAs
