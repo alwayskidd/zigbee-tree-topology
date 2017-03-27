@@ -40,10 +40,15 @@ for i in range(total_round):
                 next_node=current_node.find_next_hop(destination,short_cut=True)
                 assert next_node in current_node.neighbours, "next hop is out of reach"
                 if next_node in path:
+                    print("destination ID="+str(destination.ID))
+                    print("destination address="+str(destination.address))
                     for intermediate_node in path:
                         print("Node ID="+str(intermediate_node.ID))
                         hops,ancestor=intermediate_node.hops_to_destination(destination)
                         print("hops to destination:"+str([hops,ancestor.ID]))
+                        print("lower bound:"+str(intermediate_node.address)+" upper bound:"+str(intermediate_node.address\
+                            +intermediate_node.Rm*intermediate_node.Cskip+intermediate_node.Cm-\
+                            intermediate_node.Rm))
                     print("Node ID="+str(next_node.ID))
                     hops,ancestor=next_node.hops_to_destination(destination)
                     print("hops to destination:"+str([hops,ancestor.ID]))
