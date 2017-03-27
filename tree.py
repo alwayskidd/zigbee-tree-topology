@@ -95,3 +95,5 @@ class Tree:
     # Description: clear child and parent relationship between nodes
         for each in self.STAs:
             each.clear_children_parent()
+            each.address=None
+        self.coordinator.set_address(address=0,level=0)
