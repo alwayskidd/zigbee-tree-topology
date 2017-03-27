@@ -56,7 +56,6 @@ class Tree:
         for each in self.STAs: # check whether all the STAs are added to this tree
             if each.address==None:
                 counter=+1
-        print(counter)
         if counter!=0:
             return False,counter
         return True,counter
