@@ -15,7 +15,7 @@ phy_topology.read_topology_from_disk(filename)
 
 
 total_round=500
-Cm,Rm,Lm=3,3,10
+Cm,Rm,Lm=5,5,7
 tree=Tree(Cm,Rm,Lm,phy_topology)
 recorder=[] # record if a all nodes can be attached on a tree
 for i in range(total_round):
@@ -24,7 +24,7 @@ for i in range(total_round):
     flag,counter=tree.tree_construction()
     while flag==False: # record this event (some nodes cannot attached) and rebuild a tree:
         recorder.append(counter)
-        tree.tree_destruction() # destruct this tree 
+        tree.tree_destruction() # destruct this tree
         flag,counter=tree.tree_construction() # rebuild it
     hops=[]
     for source in tree.STAs:

@@ -31,12 +31,12 @@ class Node:
         assert self.Cskip>=0, "Cskip is less than 0="+str(self.Cskip)
 
 
-    def if_can_hear(self,STA,transmission_range): 
+    def if_can_hear(self,STA,transmission_range):
     # to see if a node is within its transmission range
     # args: STA--the STA being checked, transmission_range--the transmission range set in the sim
-    # return: True--if it is within the transmission range, 
+    # return: True--if it is within the transmission range,
     #         False--if it is not
-        import math 
+        import math
         if math.sqrt((STA.x-self.x)**2+(STA.y-self.y)**2)<=transmission_range:
             return True
         return False
@@ -97,7 +97,7 @@ class Node:
         if short_cut==False: # route along the tree
             lower_bound=self.address
             upper_bound=self.address+self.Cskip*self.Rm+self.Cm-self.Rm
-            if destination.address>upper_bound or destination.address<lower_bound:# go upstream        
+            if destination.address>upper_bound or destination.address<lower_bound:# go upstream
                 return self.parent
             # go downstream
             for each_child in self.children_d: # check if it is one of the attached end devices
