@@ -15,13 +15,13 @@ phy_topology.read_topology_from_disk(filename)
 
 
 total_round=500
-Cm,Rm,Lm=5,5,7
-tree=Tree(Cm,Rm,Lm,phy_topology)
+Cm,Rm,Lm=3,3,10
+tree=Tree(phy_topology)
 
 for i in range(total_round):
     fp=open("./result/Cm="+str(Cm)+"_Rm="+str(Rm)+"_Lm="+str(Lm)+"/round="+str(i)+".dat","w")
     print("round:"+str(i))
-    tree.tree_construction()
+    tree.tree_construction(Cm,Rm,Lm)
     hops=[]
     for source in tree.STAs:
         for destination in tree.STAs: # route packet from source to destination

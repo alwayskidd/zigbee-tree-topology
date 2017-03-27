@@ -3,17 +3,18 @@ from topology import Topology
 
 class Tree:
     """docstring for Tree"""
-    def __init__(self,Cm,Rm,Lm,phy_Topology):
-        self.Cm,self.Rm,self.Lm=Cm,Rm,Lm
+    def __init__(self,phy_Topology):
         self.phy_Topology=phy_Topology
         self.STAs=self.phy_Topology.STAs
         self.coordinator=self.phy_Topology.coordinator
-        for each in self.STAs:
+
+    def tree_construction(self,Cm,Rm,Lm):
+    # Description: Construct a tree according to the tree parameters
+        self.Cm,self.Rm,self.Lm=Cm,Rm,Lm
+        for each in self.STAs: # set the tree parameters
             each.set_tree_parameters(self.Cm,self.Rm,self.Lm)
         self.coordinator.set_address(address=0,level=0)
 
-    def tree_construction(self):
-    # Description: Construct a tree according to the tree parameters
         bfs_list=[] # construction follows a breadth first searching
         bfs_list.append(self.coordinator)
         import random
@@ -93,3 +94,6 @@ class Tree:
     # Description: clear child and parent relationship between nodes
         for each in self.STAs:
             each.clear_children_parent()
+            each.address=None
+            each.Cm,each.Rm,each.Lm,each.level,each.Cskip=None,None,None,None,None
+        self.Cm,self.Rm,self.Lm=None,None,None
