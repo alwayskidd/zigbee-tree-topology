@@ -1,5 +1,4 @@
 from topology import Topology
-from node import Node
 from tree import Tree
 
 ## the parameter settings of PHY topology ##
@@ -16,11 +15,11 @@ phy_topology.read_topology_from_disk(filename)
 
 
 total_round=500
-Cm,Rm,Lm=5,5,9
+Cm,Rm,Lm=5,5,7
 tree=Tree(Cm,Rm,Lm,phy_topology)
 
 for i in range(total_round):
-    fp=open("./result/Cm,Rm,Lm="+str([Cm,Rm,Lm])+"_roud="+str(i)+".dat",'w')
+    fp=open("./result/Cm="+str(Cm)+"_Rm="+str(Rm)+"_Lm="+str(Lm)+"/round="+str(i)+".dat","w")
     print("round:"+str(i))
     tree.tree_construction()
     hops=[]

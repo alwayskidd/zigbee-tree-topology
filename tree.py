@@ -26,14 +26,14 @@ class Tree:
 
             for each_neighbour in parent.neighbours: # choose the candidate of router child and end device child
                 if not each_neighbour.has_parent():
-                    if each_neighbour.type=="router": 
+                    if each_neighbour.type=="router":
                         children_candidates_r.append(each_neighbour)
                     if each_neighbour.type=="end device":
                         children_candidates_d.append(each_neighbour)
             random.shuffle(children_candidates_r)
             random.shuffle(children_candidates_d)
 
-            while not children_candidates_r==[] and parent.children_r.__len__()<self.Rm: 
+            while not children_candidates_r==[] and parent.children_r.__len__()<self.Rm:
             # add a router candidate to this subtree
                 child=children_candidates_r.pop()
                 address=parent.add_children(child)
@@ -43,13 +43,14 @@ class Tree:
                 child.add_parent(parent)
                 bfs_list.append(child)
 
-            while not children_candidates_d==[] and parent.children_d.__len__()<self.Cm-self.Rm: 
+            while not children_candidates_d==[] and parent.children_d.__len__()<self.Cm-self.Rm:
             # add a end device candidate to this subtree
                 child=children_candidates_d.pop()
                 address=parent.add_children(child)
                 assert address!=False, "cannot add a child"
                 child.set_address(address,parent.level+1)
                 child.add_parent(parent)
+
 
     def create_node_table_for_gephi(self,filename):
     # Description: Create the node table to help illustrate the topology in gephi
