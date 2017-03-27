@@ -4,7 +4,7 @@ from tree import Tree
 ## the parameter settings of PHY topology ##
 width,height=200,200
 transmission_range=25
-number_of_routers,number_of_end_devices=500,0
+number_of_routers,number_of_end_devices=1000,0
 coordinator_locations=[width/2,height/2]
 
 ## read the topology from disk ##
@@ -14,8 +14,8 @@ filename="./Data/area=["+str(width)+","+str(height)+"]_routers="+str(number_of_r
 phy_topology.read_topology_from_disk(filename)
 
 
-total_round=500
-Cm,Rm,Lm=5,5,7
+total_round=200
+Cm,Rm,Lm=3,3,9
 tree=Tree(Cm,Rm,Lm,phy_topology)
 recorder=[] # record if a all nodes can be attached on a tree
 for i in range(total_round):
