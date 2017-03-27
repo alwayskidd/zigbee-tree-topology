@@ -51,6 +51,14 @@ class Tree:
                 child.set_address(address,parent.level+1)
                 child.add_parent(parent)
 
+        flag=True
+        for each in self.STAs: # check whether all the STAs are added to this tree
+            if each.address==None:
+                flag=False
+                print(each.ID)
+                break
+        assert flag==True, "exist a node which is not added to the tree"
+
 
     def create_node_table_for_gephi(self,filename):
     # Description: Create the node table to help illustrate the topology in gephi
